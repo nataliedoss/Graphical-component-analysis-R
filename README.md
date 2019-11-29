@@ -12,26 +12,42 @@ This is an R implementation of the algorithm described in <a href="gca.pdf" down
 
 ## Example
 ```
-from lhood import *
-from sm import *
+source("data_create.r")
+source("gca.r")
+source("eval.r")
 
-mu0 = -4.0
-mu1 = 4.0
-sigma_prior = 1.0
-sigma = 1.0
-x = 0.0
-knots = np.arange(-5.0, 5.0, 1.0/20)
-degree = 3
-theta_grid = np.arange(-6, 6, .01) 
+n = 2000
+test_size = 500
+d <- 3
+type = "cycles"
+a <- rep(c(1, 2, 3), d)
+dep = 0.3
+dat = gen_dat_mixed(n, test_size, d, type, dep, a)
 
-# score-matching
-tmp = sm_spline(theta_grid, joint_gaussian_gmm, knots, degree)
-post_sm_normalized = tmp.estimate_unbdd()
+x_train = dat[[1]]
+x_test = dat[[2]]
+W_true = dat[[3]]
+s_true_train = dat[[4]]
+s_true_test = dat[[5]]
+L_true = dat[[6]]
 
-# plot the true posterior and the estimate
-plt.plot(theta_grid, safe_log(post_sm_normalized), color = "orange", label = "score-matching spline")
-plt.plot(theta_grid, safe_log(post_normalized), color = "black", label = "true")
-plt.legend(loc = "lower right")
-plt.suptitle("Log posterior estimates: Gaussian likelihood and Gaussian mixture prior on means")
-plt.show()
+# score-matching parameters
+m1 = 4
+m2 = 1
+rho = 1
+cores = 1
+
+len_lam = 10
+niter = 30
+tol = 0.01
+N = 100 # for density estimation 
+max_component_size = 3
+init = "random"
+seed = 3 
+
+# Run gca
+gca_cycles = gca_eval(x_train, x_test, W_true, s_true_train, s_true_test, L_true, "plots_small_gca", 
+                      m1, m2, rho, cores, len_lam, niter, tol, init, seed, 
+                      N, max_component_size, TRUE)
+
 ```
