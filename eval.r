@@ -2,7 +2,8 @@ library(ggplot2)
 library(grid)
 library(fastICA)
 source("gca.r")
-source("density.r")
+source("density_kde.r")
+
 
 
 
@@ -129,19 +130,13 @@ gca_eval <- function(x_train, x_test, W_true, s_true_train, s_true_test, L_true,
   }
   
   # Return the log likelihood on a holdout
-  return(log_kde_dep(theta_est, s_est_train, s_est_test, m1, m2, max_component_size))
+  return(log_kde_dep(theta_est, s_est_train, s_est_test, m1, m2, max_component_size) + 
+           log(abs(det(W_est))))
 }
 
 
 tca_eval <- function(x_train, x_test, W_true, s_true_train, s_true_test, L_true, name, N, record, 
                      W_est, tree_est) {
-  
-  # Whiten the estimated W
-  eig = eigen(t(W_est) %*% W_est)
-  V = eig$vectors
-  D = eig$values
-  whitener = V %*% diag(D^(-1/2)) %*% t(V)
-  W_est = W_est %*% whitener
   
   # Compute the estimated sources
   s_est_train = x_train %*% t(W_est)
@@ -172,7 +167,8 @@ tca_eval <- function(x_train, x_test, W_true, s_true_train, s_true_test, L_true,
     plot_hist_bvt(s_est_train_perm, s_true_train, x_train, d, paste0(name, "/est_bvt_tca"))
   }
   
-  return(log_kde_tree(tree_est, s_est_train, s_est_test))
+  return(log_kde_tree(tree_est, s_est_train, s_est_test) + 
+           log(abs(det(W_est))))
 }
 
 ica_eval <- function(x_train, x_test, W_true, s_true_train, s_true_test, L_true, name, 
@@ -208,7 +204,8 @@ ica_eval <- function(x_train, x_test, W_true, s_true_train, s_true_test, L_true,
     plot_hist_bvt(s_est_train_perm, s_true_train, x_train, d, paste0(name, "/est_bvt_ica"))
   }
   
-  return(log_kde_indep(s_est_train, s_est_test))
+  return(log_kde_indep(s_est_train, s_est_test) + 
+           log(abs(det(W_est))))
 }
 
 
@@ -285,8 +282,5 @@ plot_hist_marginal_gg <- function(s_est, s_true, d, name) {
   multiplot(p1[[1]], p2[[1]], p1[[2]], p2[[2]], p1[[3]], p2[[3]], cols = 2)
   dev.off()
 }
-
-
-
 
 
