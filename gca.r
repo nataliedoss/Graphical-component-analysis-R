@@ -5,12 +5,8 @@ library(ggplot2)
 library(plot3D)
 library(grid)
 library(fastICA)
-#source("suff_stats_unbounded.r")
-#source("admm.r")
-#source("density.r")
-source("suff_stats_unbounded_noparallel.r")
-source("admm_noparallel.r")
-source("density_noparallel.r")
+source("suff_stats_unbounded.r")
+source("admm.r")
 
 
 
