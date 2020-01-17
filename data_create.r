@@ -11,7 +11,7 @@ f <- function(x, alpha) {
 }
 
 # A function to generate a dataset according to our model where x = As
-gen_dat_mixed <- function(n, test_size, d, type, dep, a) {
+gen_dat_mixed <- function(n, test_size, d, type, dep, a, W, fix_W) {
 
   N = n + test_size # train + test set size
   
@@ -33,10 +33,15 @@ gen_dat_mixed <- function(n, test_size, d, type, dep, a) {
   for(i in 1:d) {
     s_true_full[,i] <- f(s_true_full[,i], a[i]*0.2)
   }
-  
-  # Create a mixing matrix at random
-  A_true = svd(matrix(rnorm(d^2), d, d))$u
-  W_true = solve(A_true)
+  if (fix_W) {
+    W_true = W
+    A_true = solve(W_true)
+  }
+  else {
+    # Create a mixing matrix at random
+    W_true = svd(matrix(rnorm(d^2), d, d))$u
+    A_true = solve(W_true)
+  }
   
   # Mix the data via the mixing matrix
   ind <- sample(nrow(s_true_full), test_size)
@@ -50,14 +55,15 @@ gen_dat_mixed <- function(n, test_size, d, type, dep, a) {
 
 
 # Returns nsims datasets of mixed data (for a fixed n)
-gen_dat_nsims <- function(nsims, n, test_size, d, type, dep, a) {
-  return(replicate(nsims, gen_dat_mixed(n, test_size, d, type, dep, a)))
+gen_dat_nsims <- function(nsims, n, test_size, d, type, dep, a, W, fix_W) {
+  return(replicate(nsims, gen_dat_mixed(n, test_size, d, type, dep, a, W, fix_W)))
 }
 
 # Returns length(vec_n) collections 
 # Each collection has nsims datasets of mixed data
-gen_dat_n_nsims <- function(nsims, vec_n, test_size, d, type, dep, a) {
-  return(lapply(vec_n, gen_dat_nsims, nsims=nsims, test_size=test_size, d=d, type=type, dep=dep, a=a))
+gen_dat_n_nsims <- function(nsims, vec_n, test_size, d, type, dep, a, W, fix_W) {
+  return(lapply(vec_n, gen_dat_nsims, nsims=nsims, test_size=test_size, d=d, 
+                type=type, dep=dep, a=a, W, fix_W))
 }
 
 

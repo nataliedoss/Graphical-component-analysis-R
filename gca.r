@@ -30,6 +30,7 @@ loss_W = function(x, W, theta, m1, m2, rho, cores) {
   return(objective)
 }
 
+# Only used to add to loss function to make loss correct
 penalty_group_sparsity <- function(theta, m1, m2) {
   d = length(theta)
   penalty_group = vector("list", d)
@@ -89,7 +90,7 @@ opt_theta = function(x, W, m1, m2, rho, cores, len_lam) {
   s_train = x_train %*% t(W)
   
   lammax=max(abs(unlist(Kvec2(s_train,m1,m2,cores))))
-  lamseq=exp(seq(from=log(.001),to=log(lammax),length.out=len_lam))
+  lamseq=exp(seq(from=log(.1),to=log(lammax),length.out=len_lam))
   admm=admmSel(s_train,lamseq,m1,m2,rho,cores)
   
   loss_theta <- lapply(1:length(lamseq), function(i) {loss(x_test, W, admm[[i]]$zz, m1, m2, rho, cores)})
@@ -137,10 +138,12 @@ gca <- function(x, m1, m2, rho, cores, len_lam, niter, tol, init, seed) {
   # Initialize W.
   if (init == "ica") {
     W_init <- solve(fastICA(x, n.comp=d)$A)
-  }  else if (init == "random") {
+  }  
+  else if (init == "random") {
     #set.seed(seed)
     W_init = svd(matrix(rnorm(d^2), d, d))$u
-  } else W_init = diag(d)
+  } 
+  else W_init = diag(d)
   
   #
   nsubiter <- niter*d*(d-1)/2

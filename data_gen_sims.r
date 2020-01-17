@@ -8,19 +8,25 @@ source("data_create.r")
 
 ###############################################################################
 # Generate the datasets we will use for simulations
-set.seed(20)
+set.seed(2001)
 nsims = 10
 vec_n <- seq(500, 5000, length=10)
 vec_dep <- c(0.0, 0.5, 0.5)
 vec_type = c("indep", "tree", "cycles")
 test_size = 500
 d <- 15
-a <- rep(c(1, 2, 3), d) 
+a <- rep(c(2, 3, 7), d/3)
+
+# Generate a random orthornormal W (you must include this as a function argument)
+# If you want to fix this as the W, set fix_W = TRUE
+W = svd(matrix(rnorm(d^2), d, d))$u
+fix_W = TRUE
+
 
 dat = list_x_train = list_x_test = list_W_true = list_s_true_train = list_s_true_test = list_L_true = vector("list", length(vec_dep))
 for (i in 1:length(vec_dep)) {
   for (j in 1:length(vec_n)) {
-    dat[[i]][[j]] = gen_dat_nsims(nsims, vec_n[j], test_size, d, vec_type[i], vec_dep[i], a)
+    dat[[i]][[j]] = gen_dat_nsims(nsims, vec_n[j], test_size, d, vec_type[i], vec_dep[i], a, W, fix_W)
     list_x_train[[i]][[j]] = dat[[i]][[j]][1, ]
     list_x_test[[i]][[j]] = dat[[i]][[j]][2, ]
     list_W_true[[i]][[j]] = dat[[i]][[j]][3, ]
@@ -30,8 +36,8 @@ for (i in 1:length(vec_dep)) {
   }
 }
 
-# Save the x_train data as csv's so TCA can run on them
-# dir.create("tca/sim_data")
+#Save the x_train data as csv's so TCA can run on them
+# dir.create("tca/Store_sim_data")
 # for (i in 1:length(vec_dep)) {
 #  for (j in 1:length(vec_n)) {
 #    for (k in 1:nsims) {

@@ -6,7 +6,7 @@ library(ks)
 
 ###############################################################################
 # Function to find clusters.
-find_components <- function(theta, m1, m2, max_component_size) {
+find_components <- function(theta, m1, m2, max_component_size, edge_threshold) {
   d = length(theta)
   list_components <- NULL 
   i = 1
@@ -23,7 +23,7 @@ find_components <- function(theta, m1, m2, max_component_size) {
       }
       nb_vec[ind] = 0
       nbs_ordered = order(abs(nb_vec), decreasing = T)
-      nbs = nbs_ordered[nbs_ordered != i & (abs(nb_vec[nbs_ordered]) > .99)][1:max_component_size-1]
+      nbs = nbs_ordered[nbs_ordered != i & (abs(nb_vec[nbs_ordered]) > edge_threshold)][1:max_component_size-1]
       list_components = append(list_components, list(sort(c(i, nbs))))
       i = i + 1
       
@@ -48,8 +48,8 @@ log_kde_indep <- function(s_train, s_test) {
   return(Reduce("+", list_kde))
 }
 
-log_kde_dep <- function(theta, s_train, s_test, m1, m2, max_component_size) {
-  list_components = find_components(theta, m1, m2, max_component_size)
+log_kde_dep <- function(theta, s_train, s_test, m1, m2, max_component_size, edge_threshold) {
+  list_components = find_components(theta, m1, m2, max_component_size, edge_threshold)
   list_kde <- lapply(list_components, 
                      function(component) log_kde_component(component, s_train, s_test))
   return(Reduce("+", list_kde))
