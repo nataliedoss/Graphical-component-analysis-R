@@ -90,7 +90,7 @@ opt_theta = function(x, W, m1, m2, rho, cores, len_lam) {
   s_train = x_train %*% t(W)
   
   lammax=max(abs(unlist(Kvec2(s_train,m1,m2,cores))))
-  lamseq=exp(seq(from=log(.1),to=log(lammax),length.out=len_lam))
+  lamseq=exp(seq(from=log(.001),to=log(lammax),length.out=len_lam))
   admm=admmSel(s_train,lamseq,m1,m2,rho,cores)
   
   loss_theta <- lapply(1:length(lamseq), function(i) {loss(x_test, W, admm[[i]]$zz, m1, m2, rho, cores)})
@@ -213,7 +213,7 @@ gca <- function(x, m1, m2, rho, cores, len_lam, niter, tol, init, seed) {
     }
     t = t + 1
     loss_vec[t] = loss(x, W, theta, m1, m2, rho, cores)
-    loss_change = abs((loss_vec[t] - loss_vec[t-1])/loss_vec_eta[t-1])
+    loss_change = abs((loss_vec[t] - loss_vec[t-1])/loss_vec[t-1])
   }
   
   # Return all
