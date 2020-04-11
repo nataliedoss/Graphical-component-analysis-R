@@ -1,6 +1,6 @@
 # Graphical Component Analysis
 
-This is an R implementation of the algorithm described in <a href="gca.pdf" download>Graphical component analysis via score matching</a>. A sample script to test the algorithm is below. 
+This is an R implementation of the algorithm described in <a href="https://github.com/nataliedoss/Thesis/main.pdf" download>Chapter 6: Graphical component analysis for latent signal detection</a>. A sample script to test the algorithm is below. 
 
 ## External dependencies
 
