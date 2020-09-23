@@ -1,6 +1,6 @@
 # Graphical Component Analysis
 
-This is an R implementation of the algorithm described in <a href="https://github.com/nataliedoss/Thesis/blob/master/main.pdf" download>Chapter 4: Graphical component analysis for latent signal detection</a>. A sample script to test the algorithm is below. The algorithm allows for latent signal detection when the hidden source components have dependence modeled by a pairwise graphical model structure. In this variant of GCA, each node and edge component of the latent source density is represented in an orthogonal polynomial basis expansion; the basis coefficients are the parameters to be estimated via score matching.
+This is an R implementation of the algorithm described in <a href="https://github.com/nataliedoss/Thesis/blob/master/main.pdf" download>Chapter 4: Graphical component analysis for latent signal detection</a>. A sample script to test the algorithm is below. The algorithm allows for latent signal detection when the hidden source components have dependence modeled by a pairwise graphical model structure. In this variant, each node and edge component of the latent source density is represented in an orthogonal polynomial basis expansion; the basis coefficients are the parameters to be estimated via score matching.
 
 ## External dependencies
 
