@@ -1,0 +1,8 @@
+Make sure data_gen_sims.r creates the type of data you want.
+The settings right now are to run 300 sims on 300 nodes (3 types of graphs, 10 values of sample size, 10 sims each). If you want something different, you must edit the sims.r and sims.sh files in both the main and tca folders.
+In main folder, create three empty folders: plots_ica, plots_tca, plots_gca.
+In tea folder, create an empty folder: Store_estimates.
+In the main folder, run data_gen_sims.sh in batch mode to generate data.
+In the tea folder, run sims.sh in batch mode to run the tca sims.
+In the main folder, run sims.sh in batch mode to run the full sims.
+In the main folder, run sims_plot.sh to view the results. 
